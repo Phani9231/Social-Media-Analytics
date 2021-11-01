@@ -36,7 +36,13 @@ Parameters: str
 Returns: str
 '''
 def parseName(fromString):
-    return
+    for line in fromString.split("\n"):
+        length=line.find(" ")
+        s1=line[length:]
+        bracket=s1.find("(")
+        s2=s1[:bracket]
+        line=s2.strip()
+    return line
 
 
 '''
@@ -46,7 +52,13 @@ Parameters: str
 Returns: str
 '''
 def parsePosition(fromString):
-    return
+    str=""
+    for i in fromString.split():
+        bracket=(i.find("("))
+        if bracket==0:
+            str=i.replace("(","")
+    return str
+    
 
 
 '''
@@ -56,7 +68,13 @@ Parameters: str
 Returns: str
 '''
 def parseState(fromString):
-    return
+    str="" 
+    for i in fromString.split("\n"):
+        fromto=i.find("from")
+        str=fromString[fromto:]
+        str=str.replace(")","")
+        str=str.replace("from ","")
+    return str
 
 
 '''
@@ -66,7 +84,19 @@ Parameters: str
 Returns: list of strs
 '''
 def findHashtags(message):
-    return
+    lst=[]
+    k=""
+    words=message.split("#")
+    for i in words[1:len(words)]:
+        for j in i:
+            if j not in endChars:
+                k+=j
+            else:
+                break
+        k='#'+k
+        lst.append(k)
+        k=""
+    return lst
 
 
 '''
@@ -76,7 +106,8 @@ Parameters: dataframe ; str
 Returns: str
 '''
 def getRegionFromState(stateDf, state):
-    return
+    df=stateDf.loc[stateDf["state"]==state,"region"]
+    return df.values[0]
 
 
 '''
@@ -86,6 +117,29 @@ Parameters: dataframe ; dataframe
 Returns: None
 '''
 def addColumns(data, stateDf):
+    name_add=[]
+    position_add=[]
+    state_add=[]
+    region_add=[]
+    hashtag_add=[]
+    for index, row in data.iterrows():
+        value=data['label'].iloc[index]
+        name=parseName(value)
+        position=parsePosition(value)
+        state=parseState(value)
+        region=getRegionFromState(stateDf, state)
+        text_value=data['text'].iloc[index]
+        hashtag=findHashtags(text_value)
+        name_add.append(name)
+        position_add.append(position)
+        state_add.append(state)
+        region_add.append(region)
+        hashtag_add.append(hashtag)
+    data['name']=name_add
+    data['position']=position_add
+    data['state']=state_add
+    data['region']=region_add
+    data['hashtags']=hashtag_add
     return
 
 
@@ -267,6 +321,8 @@ if __name__ == "__main__":
     test.week1Tests()
     print("\n" + "#"*15 + " WEEK 1 OUTPUT " + "#" * 15 + "\n")
     test.runWeek1()
+
+
 
     ## Uncomment these for Week 2 ##
     """print("\n" + "#"*15 + " WEEK 2 TESTS " +  "#" * 16 + "\n")
