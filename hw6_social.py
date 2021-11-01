@@ -257,10 +257,18 @@ Parameters: dataframe ; str
 Returns: float
 '''
 def getHashtagSentiment(data, hashtag):
-    dict={}
-
-
-    return
+    count=0
+    lst=[]
+    for index,row in data.iterrows():
+        if hashtag in row['text']:
+            count+=1
+            if row['sentiment']=='positive':
+                lst.append(1)
+            elif row['sentiment']=='negative':
+                lst.append(-1)
+            elif row['sentiment']=='neutral':
+                lst.append(0)
+    return sum(lst)/count
 
 
 ### PART 3 ###
@@ -377,5 +385,5 @@ if __name__ == "__main__":
     test.runWeek2()
 
     ## Uncomment these for Week 3 ##
-    """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
-    test.runWeek3()"""
+    print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
+    test.runWeek3()
